@@ -1,4 +1,5 @@
-Respond
+Respond [![GoDoc](http://godoc.org/github.com/dannyvankooten/respond?status.svg)](http://godoc.org/github.com/dannyvankooten/respond)  [![Build Status](https://travis-ci.org/dannyvankooten/respond.svg)](https://travis-ci.org/dannyvankooten/respond) [![Go Report Card](https://goreportcard.com/badge/github.com/dannyvankooten/respond)](https://goreportcard.com/report/github.com/dannyvankooten/respond)
+
 =====
 
 Go package for easily responding to HTTP requests with common response types, setting the appropriate `Content-Type` and `Status` headers as needed.
