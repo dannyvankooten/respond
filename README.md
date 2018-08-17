@@ -17,7 +17,7 @@ import "github.com/dannyvankooten/respond"
 ```
 
 ```go
-// this sets Content-Type (incl. charset) and Status header before writing the respond.
+// this sets Content-Type (incl. charset) and Status header before writing the response body.
 func myHandler(w http.ResponseWriter, r *http.Request) {
    respond.HTML(w, http.StatusOK, []byte("Hello world!"))
 }
