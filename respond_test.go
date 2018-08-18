@@ -61,6 +61,22 @@ func TestJSON(t *testing.T) {
 	}
 }
 
+func TestJSONError(t *testing.T) {
+	w := httptest.NewRecorder()
+	err := JSON(w, 200, make(chan int))
+	if err == nil {
+		t.Error("Expected err, got nil")
+	}
+}
+
+func TestXMLError(t *testing.T) {
+	w := httptest.NewRecorder()
+	err := XML(w, 200, make(chan int))
+	if err == nil {
+		t.Error("Expected err, got nil")
+	}
+}
+
 func TestTemplate(t *testing.T) {
 	w := httptest.NewRecorder()
 	tmpl := template.Must(template.New("").Parse("Hello {{.}}"))
@@ -83,6 +99,15 @@ func TestTemplate(t *testing.T) {
 	body, _ := ioutil.ReadAll(res.Body)
 	if v := string(body); v != "Hello world" {
 		t.Errorf("invalid body: expected %#v, got %#v", string(data), v)
+	}
+}
+
+func TestTemplateError(t *testing.T) {
+	w := httptest.NewRecorder()
+	tmpl := template.Must(template.New("").Parse("Hello <span class=\">world</span>"))
+	err := Template(w, http.StatusOK, tmpl)
+	if err == nil {
+		t.Error("expected err, got nil")
 	}
 }
 
