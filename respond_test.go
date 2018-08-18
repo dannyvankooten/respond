@@ -24,6 +24,7 @@ SOFTWARE.
 package respond
 
 import (
+	"html/template"
 	"io/ioutil"
 	"net/http"
 	"net/http/httptest"
@@ -57,6 +58,31 @@ func TestJSON(t *testing.T) {
 	body, _ := ioutil.ReadAll(res.Body)
 	if v := string(body); v != "{\"one\":\"hello\",\"two\":\"world\"}\n" {
 		t.Errorf("invalid response body: expected %#v, got %#v", "{\"one\":\"hello\",\"two\":\"world\"}\n", v)
+	}
+}
+
+func TestTemplate(t *testing.T) {
+	w := httptest.NewRecorder()
+	tmpl := template.Must(template.New("").Parse("Hello {{.}}"))
+	data := "world"
+	err := Template(w, http.StatusOK, tmpl, data)
+	res := w.Result()
+	if err != nil {
+		t.Errorf("expected %#v, got %#v", nil, err)
+	}
+
+	if res.StatusCode != http.StatusOK {
+		t.Errorf("invalid status code: expected %#v, got %#v", http.StatusOK, res.StatusCode)
+	}
+
+	e := ContentHTML + "; charset=" + Charset
+	if v := res.Header.Get(ContentType); v != e {
+		t.Errorf("invalid content type: expected %#v, got %#v", e, v)
+	}
+
+	body, _ := ioutil.ReadAll(res.Body)
+	if v := string(body); v != "Hello world" {
+		t.Errorf("invalid body: expected %#v, got %#v", string(data), v)
 	}
 }
 

@@ -26,6 +26,7 @@ package respond
 import (
 	"encoding/json"
 	"encoding/xml"
+	"html/template"
 	"net/http"
 )
 
@@ -48,13 +49,27 @@ const (
 
 var Charset = "UTF-8"
 
-// HTML executes the template and writes to the responsewriter
+// Template executes the template and writes to the responsewriter
+func Template(w http.ResponseWriter, statusCode int, tmpl *template.Template, data ...interface{}) error {
+	w.Header().Set(ContentType, ContentHTML+"; charset="+Charset)
+	w.WriteHeader(statusCode)
+
+	var d interface{}
+	if len(data) > 0 {
+		d = data[0]
+	}
+	return tmpl.Execute(w, d)
+}
+
+// HTML sets a Content-Type: text/html header with charset and writes the byte data to the stream
 func HTML(w http.ResponseWriter, statusCode int, data ...[]byte) error {
 	w.Header().Set(ContentType, ContentHTML+"; charset="+Charset)
 	w.WriteHeader(statusCode)
 
 	for i := range data {
-		w.Write(data[i])
+		if _, err := w.Write(data[i]); err != nil {
+			return err
+		}
 	}
 
 	return nil
@@ -97,7 +112,9 @@ func Text(w http.ResponseWriter, statusCode int, data ...[]byte) error {
 	w.WriteHeader(statusCode)
 
 	for i := range data {
-		w.Write(data[i])
+		if _, err := w.Write(data[i]); err != nil {
+			return err
+		}
 	}
 
 	return nil

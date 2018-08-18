@@ -4,6 +4,7 @@ Respond [![GoDoc](http://godoc.org/github.com/dannyvankooten/respond?status.svg)
 Go package for easily responding to HTTP requests with common response types, setting the appropriate `Content-Type` and `Status` headers as needed.
 
 - HTML 
+- Template (using `html/template`)
 - Text 
 - JSON (using encoding/json)
 - XML (using encoding/xml)
@@ -25,6 +26,12 @@ func myHandler(w http.ResponseWriter, r *http.Request) {
 // if you just want to set the Content-Type and Status header, omit the last parameter
 func myHandler(w http.ResponseWriter, r *http.Request) {
    respond.HTML(w, http.StatusOK)
+}
+
+// html/template.*Template
+func myHandler(w http.ResponseWriter, r *http.Request) {
+	tmpl := template.Must(template.New("").Parse("Hello {{.}}"))
+	respond.Template(w, http.StatusOK, tmpl, "world")
 }
 
 // JSON
